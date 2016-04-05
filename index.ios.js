@@ -13,16 +13,19 @@ class stopwatch extends Component {
         flex: 1,
         alignItems: 'stretch',
       },
-      header: {
-        flex: 1
-      }
+      header: [
+        {
+          flex: 1
+        },
+        this.styleBorder('yellow')
+      ]
     }
 
     return (
       <View style={styles.container}>
         <View style={styles.header}>
           {this.renderTimer()}
-          <View>
+          <View style={this.styleBorder('green')}>
             {this.renderStartButton()}
             {this.renderLapButton()}
           </View>
@@ -33,12 +36,12 @@ class stopwatch extends Component {
   }
 
   renderTimer () {
-    const styles = {
-
-    }
+    const styles = [
+      this.styleBorder('red')
+    ]
 
     return (
-      <View>
+      <View style={styles}>
         <Text>00:00.0</Text>
       </View>
     )
@@ -57,10 +60,6 @@ class stopwatch extends Component {
   }
 
   renderLapButton () {
-    const styles = {
-
-    }
-
     return (
       <View>
         <Text>Lap</Text>
@@ -69,15 +68,25 @@ class stopwatch extends Component {
   }
 
   renderFooter () {
-    const styles = {
-
-    }
+    const styles = [
+      {
+        flex: 1
+      },
+      this.styleBorder('blue')
+    ]
 
     return (
-      <View>
-        <Text>Laps</Text>
+      <View style={styles}>
+        <Text>List of Laps</Text>
       </View>
     )
+  }
+
+  styleBorder (color) {
+    return {
+      borderColor: color,
+      borderWidth: 4
+    }
   }
 }
 
