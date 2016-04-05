@@ -15,18 +15,28 @@ class stopwatch extends Component {
     super(props)
 
     this.state = {
-      timeElapsed: null
+      timeElapsed: null,
+      running: false
     }
 
     this.handleStartPress = this.handleStartPress.bind(this)
   }
 
   handleStartPress (e) {
+    if (this.state.running) {
+      clearInterval(this.interval)
+      this.setState({
+        running: false
+      })
+      return
+    }
+
     const startTime = new Date()
 
-    setInterval(() => {
+    this.interval = setInterval(() => {
       this.setState({
-        timeElapsed: new Date() - startTime
+        timeElapsed: new Date() - startTime,
+        running: true
       })
     }, 30)
   }
@@ -57,7 +67,7 @@ class stopwatch extends Component {
         <View style={styles.header}>
           {this.renderTimer()}
           <View style={styles.buttonWrapper}>
-            <Button label='Start' handler={this.handleStartPress} style={{ backgroundColor: 'green' }}/>
+            <Button label={ (this.state.running) ? 'Stop' : 'Start' } handler={this.handleStartPress} style={{ backgroundColor: (this.state.running) ? 'red' : 'green' }}/>
             <Button label='Lap' handler={() => { console.log('Lap pressed') }} />
           </View>
         </View>
@@ -77,7 +87,7 @@ class stopwatch extends Component {
 
     return (
       <View style={styles}>
-        <Text style={{fontFamily: 'Cochin', fontSize: 60}}>{timeElapsed ? formatTime(timeElapsed) : '00:00.00' }</Text>
+        <Text style={{fontFamily: 'Cochin', fontSize: 60}}>{formatTime(timeElapsed)}</Text>
       </View>
     )
   }
