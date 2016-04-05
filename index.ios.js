@@ -9,6 +9,7 @@ import React, {
 
 import formatTime from 'minutes-seconds-milliseconds'
 import Button from './src/Button.js'
+import Lap from './src/Lap.js'
 
 class stopwatch extends Component {
   constructor (props) {
@@ -16,26 +17,40 @@ class stopwatch extends Component {
 
     this.state = {
       timeElapsed: null,
-      running: false
+      running: false,
+      startTime: null,
+      laps: []
     }
 
     this.handleStartPress = this.handleStartPress.bind(this)
+    this.handleLapPress = this.handleLapPress.bind(this)
+    this.renderFooter = this.renderFooter.bind(this)
+  }
+
+  handleLapPress (e) {
+    const lap = this.state.timeElapsed
+
+    this.setState({
+      startTime: new Date(),
+      laps: this.state.laps.concat([lap])
+    })
   }
 
   handleStartPress (e) {
     if (this.state.running) {
       clearInterval(this.interval)
       this.setState({
-        running: false
+        running: false,
+        laps: []
       })
       return
     }
 
-    const startTime = new Date()
+    this.setState({startTime: new Date()})
 
     this.interval = setInterval(() => {
       this.setState({
-        timeElapsed: new Date() - startTime,
+        timeElapsed: new Date() - this.state.startTime,
         running: true
       })
     }, 30)
@@ -68,7 +83,7 @@ class stopwatch extends Component {
           {this.renderTimer()}
           <View style={styles.buttonWrapper}>
             <Button label={ (this.state.running) ? 'Stop' : 'Start' } handler={this.handleStartPress} style={{ backgroundColor: (this.state.running) ? 'red' : 'green' }}/>
-            <Button label='Lap' handler={() => { console.log('Lap pressed') }} />
+            <Button label='Lap' handler={this.handleLapPress} />
           </View>
         </View>
 
@@ -99,7 +114,10 @@ class stopwatch extends Component {
 
     return (
       <View style={styles}>
-        <Text>List of Laps</Text>
+        {this.state.laps.map((lap, i) => {
+          const lapNumber = i + 1
+          return (<Lap time={lap} lapNumber={lapNumber} key={`Lap-${lapNumber}`} />)
+        })}
       </View>
     )
   }
